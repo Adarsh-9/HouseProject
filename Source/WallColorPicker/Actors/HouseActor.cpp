@@ -35,6 +35,8 @@ AHouseActor::AHouseActor()
 	PromptWidget->SetVisibility(false);
 	
 	StyleCustomization = CreateDefaultSubobject<UStyleCustomizationComponent>(FName("Style Component"));
+	Namet = this->GetName();
+	FNamet = this->GetFName().ToString();
 }
 
 // Called when the game starts or when spawned
@@ -45,6 +47,7 @@ void AHouseActor::BeginPlay()
 	DynamicMaterial = UMaterialInstanceDynamic::Create(Material, NULL);
 	ItemMesh->SetMaterial(0, DynamicMaterial);
 	//DrawDebugBox(GetWorld(),GetActorLocation(),Box->GetScaledBoxExtent(),FColor::White,true,0,0,5);
+	ItemMesh->GetMaterial(0)->GetVectorParameterValue(FName("Color"),CurrentColor);
 	Box->OnComponentBeginOverlap.AddDynamic(this, &AHouseActor::OnOverlapBegin);
 	Box->OnComponentEndOverlap.AddDynamic(this, &AHouseActor::OnOverlapEnd);
 }
@@ -104,19 +107,18 @@ void AHouseActor::LoadSate()
 	auto SaveGame = Cast <UWallColorPickerGameInstance>(UGameplayStatics::GetGameInstance(this))->SaveGame;
 	if (StyleCustomization->bCanChangeColor)
 	{
-		if (SaveGame->HouseSaveData.HouseActor.Contains(GetName()))
+		if (auto Result = SaveGame->HouseSaveData.HouseActor.Find(GetName()))
 		{
-			ChangeItemColor(SaveGame->HouseSaveData.HouseActor[GetName()].Color);
+			ChangeItemColor(Result->Color);
 		}
 	}
 	else if (StyleCustomization->bCanChangeMaterial)
 	{
-		if (SaveGame->HouseSaveData.HouseActor.Contains(GetName()))
+		if (auto Result = SaveGame->HouseSaveData.HouseActor.Find(GetName()))
 		{
-			ChangeItemMaterial(SaveGame->HouseSaveData.HouseActor[GetName()].MaterialIndex);
+			ChangeItemMaterial(Result->MaterialIndex);
 		}
 	}
-	
 }
 
 
@@ -129,7 +131,7 @@ void AHouseActor::SaveSate()
 		FHouseActorDataStruct TempStruct;
 		TempStruct.Color = CurrentColor;
 		TempStruct.MaterialIndex = -1;
-		SaveGame->HouseSaveData.HouseActor.Add(GetName(),TempStruct);
+		SaveGame->HouseSaveData.HouseActor.Add(this->GetName(),TempStruct);
 		UGameplayStatics::SaveGameToSlot(SaveGame,SlotName, 0);
 	}
 	else if (StyleCustomization->bCanChangeMaterial)
@@ -137,7 +139,7 @@ void AHouseActor::SaveSate()
 		FHouseActorDataStruct TempStruct;
 		TempStruct.Color = FLinearColor::Black;
 		TempStruct.MaterialIndex = CurrentMaterialindex;
-		SaveGame->HouseSaveData.HouseActor.Add(GetName(), TempStruct);
+		SaveGame->HouseSaveData.HouseActor.Add(this->GetName(), TempStruct);
 		UGameplayStatics::SaveGameToSlot(SaveGame, SlotName, 0);
 	}
 }

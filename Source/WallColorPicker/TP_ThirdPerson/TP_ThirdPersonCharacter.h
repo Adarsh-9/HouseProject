@@ -33,7 +33,7 @@ public:
 protected:
 
 	/** Resets HMD orientation in VR. */
-	void OnResetVR();
+	//void OnResetVR();
 
 	/** Called for forwards/backward input */
 	void MoveForward(float Value);
@@ -54,10 +54,10 @@ protected:
 	void LookUpAtRate(float Rate);
 
 	/** Handler for when a touch input begins. */
-	void TouchStarted(ETouchIndex::Type FingerIndex, FVector Location);
+	//void TouchStarted(ETouchIndex::Type FingerIndex, FVector Location);
 
 	/** Handler for when a touch input stops. */
-	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
+	//void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 
 	FHitResult HitResult;
 	// APawn interface
@@ -67,6 +67,8 @@ protected:
 private:
 	FVector PlayerViewPointLocation;
 	FRotator PlayerViewPointRotation;
+	UFUNCTION()
+	void HandleQuitGame();
 public:
 	/** Returns CameraBoom subobject **/
 	//FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }

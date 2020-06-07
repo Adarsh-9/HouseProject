@@ -47,6 +47,10 @@ public:
 		void SaveSate();
 	UFUNCTION(BlueprintCallable, Category = "Save Game")
 		void LoadSate();
+	UPROPERTY(BlueprintReadOnly)
+		FString Namet = "";
+	UPROPERTY(BlueprintReadOnly)
+		FString FNamet = "";
 private:
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

@@ -14,6 +14,7 @@
 #include "../Actors/HouseActor.h"
 #include "../Actors/StyleCustomizationComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "../Actors/ObjectSelectionComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -77,17 +78,25 @@ void ATP_ThirdPersonCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ATP_ThirdPersonCharacter::LookUpAtRate);
 
-	// handle touch devices
+	/*// handle touch devices
 	PlayerInputComponent->BindTouch(IE_Pressed, this, &ATP_ThirdPersonCharacter::TouchStarted);
 	PlayerInputComponent->BindTouch(IE_Released, this, &ATP_ThirdPersonCharacter::TouchStopped);
 
 	// VR headset functionality
-	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &ATP_ThirdPersonCharacter::OnResetVR);
+	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &ATP_ThirdPersonCharacter::OnResetVR);*/
+
+	//Handle Quit Game
+	PlayerInputComponent->BindAction("Quit",IE_Pressed,this,&ATP_ThirdPersonCharacter::HandleQuitGame);
 }
 
 void ATP_ThirdPersonCharacter::Interact()
 {
 	SelectionComponent->Interact();
+}
+
+void ATP_ThirdPersonCharacter::HandleQuitGame()
+{
+	UKismetSystemLibrary::QuitGame(this,UGameplayStatics::GetPlayerController(this,0),EQuitPreference::Quit,false);
 }
 
 
@@ -96,7 +105,7 @@ void ATP_ThirdPersonCharacter::Tick(float DeltaSconds)
 	Super::Tick(DeltaSconds);
 }
 
-void ATP_ThirdPersonCharacter::OnResetVR()
+/*void ATP_ThirdPersonCharacter::OnResetVR()
 {
 	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
 }
@@ -109,7 +118,7 @@ void ATP_ThirdPersonCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVect
 void ATP_ThirdPersonCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
 {
 		StopJumping();
-}
+}*/
 
 void ATP_ThirdPersonCharacter::TurnAtRate(float Rate)
 {
